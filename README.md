@@ -8,4 +8,4 @@ Wix : rien ici n'est secret.
 `src/public/custom-elements/guide-coureur.js`, à chaque push (action `livrer-cdn` du dépôt privé).
 `r<révision>/` porte le fichier pour chaque révision publiée à venir du site.
 
-Source : `WapitixAgency/cote-amour eb8fef5`.
+Source : `WapitixAgency/cote-amour ff4d485`.

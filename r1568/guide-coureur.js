@@ -1,4 +1,4 @@
-/* source cote-amour eb8fef5 */
+/* source cote-amour ff4d485 */
 (function () {
   'use strict';
   if (typeof window === 'undefined') return;
@@ -953,6 +953,8 @@
       var self = this;
       if (this._state.payload || this.hasAttribute('payload')) { this._ready = true; this._render(); }
       else {
+        var pret = this._preRead();
+        if (pret) { this._state.payload = pret; this._ready = true; this._cacheWrite(pret); this._render(); return; }
         var cached = this._cacheRead();
         if (cached) { this._state.payload = cached; this._ready = true; this._render(); }
         else if (!this._endpoint()) { this._ready = true; this._render(); }
@@ -995,6 +997,13 @@
       if (!this._endpoint()) return null;
       try { var raw = window.sessionStorage.getItem(this._cacheKey()); if (!raw) return null; var o = JSON.parse(raw); return o && o.t && Date.now() - o.t < 600000 ? o.d : null; } catch (e) { return null; }
     }
+    _cacheWrite(d) { try { window.sessionStorage.setItem(this._cacheKey(), JSON.stringify({ t: Date.now(), d: d })); } catch (e) {} }
+    _preRead() {
+      var o = window.__gcDonnees;
+      if (!o || !o.d || typeof o.d !== 'object' || o.l !== (this._state.lang === 'en' ? 'en' : 'fr') || !this._endpoint() || this.getAttribute('source')) return null;
+      window.__gcDonnees = null;
+      return o.d;
+    }
     _fetch() {
       var self = this, url = this._endpoint(), done = false;
       if (!url || typeof fetch !== 'function') return;
@@ -1008,10 +1017,12 @@
         clearTimeout(guard);
         if (done || !self._initialized || self.hasAttribute('payload') || !d || typeof d !== 'object') return;
         var neuf = JSON.stringify(d);
-        try { window.sessionStorage.setItem(self._cacheKey(), JSON.stringify({ t: Date.now(), d: d })); } catch (e) {}
+        self._cacheWrite(d);
         if (self._ready && self._state.payload && JSON.stringify(self._state.payload) === neuf) return;
         if (self._bootTimer) { clearTimeout(self._bootTimer); self._bootTimer = null; }
-        self._state.payload = d; self._ready = true; self._scheduleRender();
+        var premier = !self._ready;
+        self._state.payload = d; self._ready = true;
+        if (premier) self._render(); else self._scheduleRender();
       }).catch(function (e) {
         clearTimeout(guard);
         console.warn('[guide-coureur] donnees CMS indisponibles, contenu de repli', e && e.message);
