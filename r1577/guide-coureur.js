@@ -1,4 +1,4 @@
-/* source cote-amour ac80c36 */
+/* source cote-amour 25ad30f */
 (function () {
   'use strict';
   if (typeof window === 'undefined') return;
@@ -65,6 +65,7 @@
   var FONTS = face(400, '1976ef4edbf44111abd4bd57d1e3e8f4') + face(700, '044bf68ddba3463fa1871befb02edccf') + face(900, '703a031aff9e414b8887521a867cbe71');
 
   var STORE_COURSE = 'mica-guide-course';
+  var CMS = false;
 
   var DICT = {
     fr: {
@@ -986,7 +987,7 @@
     }
     _endpoint() {
       var src = this.getAttribute('source');
-      if (src === 'none') return '';
+      if (src === 'none' || (!CMS && !src)) return '';
       return (src ? src.replace(/\/$/, '') : '') + '/_functions/guideCoureur?lang=' + (this._state.lang === 'en' ? 'en' : 'fr');
     }
     _cacheKey() { return 'mica-guide-data-' + (this._state.lang === 'en' ? 'en' : 'fr'); }
