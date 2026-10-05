@@ -1,4 +1,4 @@
-/* source cote-amour 25ad30f */
+/* source cote-amour eb8fef5 */
 (function () {
   'use strict';
   if (typeof window === 'undefined') return;
@@ -65,7 +65,7 @@
   var FONTS = face(400, '1976ef4edbf44111abd4bd57d1e3e8f4') + face(700, '044bf68ddba3463fa1871befb02edccf') + face(900, '703a031aff9e414b8887521a867cbe71');
 
   var STORE_COURSE = 'mica-guide-course';
-  var CMS = false;
+  var CMS = true;
 
   var DICT = {
     fr: {
@@ -1000,7 +1000,11 @@
       if (!url || typeof fetch !== 'function') return;
       var guard = setTimeout(function () { done = true; }, 8000);
       this._teardown.push(function () { clearTimeout(guard); done = true; });
-      fetch(url, { credentials: 'omit' }).then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }).then(function (d) {
+      var lire = function () { return fetch(url, { credentials: 'omit' }).then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }); };
+      var pre = window.__gcDonnees;
+      window.__gcDonnees = null;
+      var req = pre && pre.p && pre.l === (this._state.lang === 'en' ? 'en' : 'fr') && !this.getAttribute('source') ? pre.p.then(function (d) { return d || lire(); }) : lire();
+      req.then(function (d) {
         clearTimeout(guard);
         if (done || !self._initialized || self.hasAttribute('payload') || !d || typeof d !== 'object') return;
         var neuf = JSON.stringify(d);
@@ -1026,12 +1030,12 @@
       if (L && L[k] != null && L[k] !== '') return L[k];
       return (DICT[this._state.lang] || DICT.fr)[k] || DICT.fr[k] || k;
     }
-    _v(k) { var p = this._state.payload || {}; return isEmpty(p[k]) ? DEF[k] : p[k]; }
+    _v(k) { var p = this._state.payload || {}; if (p._cms && Object.prototype.hasOwnProperty.call(p, k)) return p[k]; return isEmpty(p[k]) ? DEF[k] : p[k]; }
     _list(k) { var v = this._v(k); return Array.isArray(v) ? v.filter(function (x) { return x && x.actif !== false; }) : []; }
     _liens() {
-      var p = (this._state.payload || {}).liens || {}, out = {}, k;
-      for (k in DEF.liens) out[k] = DEF.liens[k];
-      for (k in p) if (!isEmpty(p[k])) out[k] = p[k];
+      var p0 = this._state.payload || {}, p = p0.liens || {}, cms = !!(p0._cms && p0.liens), out = {}, k;
+      for (k in DEF.liens) out[k] = cms ? '' : DEF.liens[k];
+      for (k in p) if (cms || !isEmpty(p[k])) out[k] = p[k];
       return out;
     }
     _href(u) {
