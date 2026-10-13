@@ -1,4 +1,4 @@
-/* source cote-amour e119e3c */
+/* source cote-amour 76a93ad */
 (function () {
   'use strict';
   if (typeof window === 'undefined') return;
@@ -221,7 +221,7 @@
     courseDefaut: 'marathon',
     jourDefaut: 1,
     liens: {
-      carte: '',
+      carte: '/carte-interactive',
       reglement: '/rules',
       benevoles: '/volunteers',
       circulation: '/circulation',
@@ -491,7 +491,7 @@
     ],
 
     encarts: [
-      { place: 'haut', format: 'bandeau', icone: 'map', tag: 'Carte interactive', titre: 'Plan général interactif', texte: 'Repérez les ravitaillements, découvrez les services proposés et retrouvez toutes les informations pratiques de votre course.', lien: '', bouton: 'Ouvrir la carte interactive', attente: 'Bientôt disponible' },
+      { place: 'haut', format: 'bandeau', icone: 'map', tag: 'Carte interactive', titre: 'Plan général interactif', texte: 'Repérez les ravitaillements, découvrez les services proposés et retrouvez toutes les informations pratiques de votre course.', lien: '/carte-interactive', bouton: 'Ouvrir la carte interactive', attente: 'Bientôt disponible' },
       { place: 'programme', format: 'edito', tag: 'Édito du partenaire titre de l\'événement', titre: 'Amarris', logo: 'https://static.wixstatic.com/media/df962b_9f0cf5e586ff40589cf69bf73ccd31e0~mv2.png', image: 'https://static.wixstatic.com/media/df962b_20c9928aafeb4824a317f1363cc71ff3~mv2.jpg', imagePos: '78% 30%', imageAlt: 'Claude Robin, président et fondateur d\'Amarris Groupe',
         texte: '<p>Chers coureurs,</p><p>C\'est avec plaisir qu\'Amarris s\'associe une nouvelle fois au Marathon International de la Côte d\'Amour Amarris.</p><p>Pour cette 3<sup>e</sup> édition, l\'engouement est plus fort que jamais : 17 000 coureurs s\'apprêtent à prendre le départ sur les 5 parcours du Marathon, chacun avec son objectif et son rythme. Parmi eux, 120 collaborateurs, clients et partenaires d\'Amarris. Une présence dont nous sommes particulièrement fiers !</p><p>Vibrer au rythme de cette aventure collective, partager vos émotions, c\'est ce qui nous anime au quotidien. Alors cette année encore, nous serons à vos côtés pour vous encourager.</p><p>Bonne course !</p>',
         signature: 'Claude Robin', fonction: 'Président & Fondateur, Amarris Groupe', lien: 'https://www.amarris.fr/', bouton: 'En savoir plus sur Amarris' },
@@ -1318,7 +1318,7 @@
       var L = this._liens(), out = '', k;
       var facts = (c.faits || []).map(function (f) { return '<div class="gc-fact">' + ic(f.i || 'info') + '<div><div class="gc-fact-k">' + tx(f.k) + '</div><div class="gc-fact-v">' + rx(f.v) + '</div></div></div>'; }).join('');
       out += '<div class="gc-rp"><div class="gc-rp-head"><div><div class="gc-kick">' + tx(c.jour) + '</div><h3 class="gc-rp-t">' + tx(c.titre || c.label) + '</h3>' + (c.sous ? '<p class="gc-rp-s">' + tx(c.sous) + '</p>' : '') + '</div>' +
-        this._btn(L.carte, this._t('carte'), 'gc-btn-blue', this._t('bientot'), false) + '</div><div class="gc-facts">' + facts + '</div>';
+        this._btn(L.carte ? L.carte + (L.carte.indexOf('?') === -1 ? '?' : '&') + 'course=' + encodeURIComponent(c.id) : '', this._t('carte'), 'gc-btn-blue', this._t('bientot'), false) + '</div><div class="gc-facts">' + facts + '</div>';
       if (Array.isArray(c.departs) && c.departs.length) {
         out += '<div class="gc-mt"><h4 class="gc-h4">' + tx(this._t('departs')) + '</h4><div class="gc-deps">' + c.departs.map(function (d) {
           return '<div class="gc-dep"><b>' + tx(d.h) + '</b><div><strong>' + tx(d.t) + '</strong><span>' + tx(d.d) + (d.n ? ' · ' + tx(d.n) : '') + '</span></div></div>';
