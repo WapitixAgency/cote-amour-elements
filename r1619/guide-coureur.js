@@ -1,4 +1,4 @@
-/* source cote-amour 76a93ad */
+/* source cote-amour 55dfcbe */
 (function () {
   'use strict';
   if (typeof window === 'undefined') return;
@@ -222,6 +222,7 @@
     jourDefaut: 1,
     liens: {
       carte: '/carte-interactive',
+      fanzones: '/carte-interactive',
       reglement: '/rules',
       benevoles: '/volunteers',
       circulation: '/circulation',
@@ -315,6 +316,10 @@
     village: {
       titre: 'Village Marathon',
       texte: 'Le Village Marathon accueille le retrait des dossards et les exposants, au complexe sportif Jean Gaillardon (Les Salines, La Baule).',
+      plan: 'https://static.wixstatic.com/media/df962b_a908508bdd97424f8f200e0d25d6fc00~mv2.jpg',
+      planAlt: 'Plan du Village Marathon',
+      planTitre: 'Entrez dans l\'ambiance de la course !',
+      planTexte: 'Explorez les stands, profitez des animations et venez rencontrer les meneurs d\'allure et les athlètes du plateau élite. Faites aussi le plein d\'infos pour le jour J grâce aux panneaux d\'information et aux bénévoles à votre disposition pour répondre à vos questions avant de prendre le départ !',
       exposants: []
     },
     boutique: {
@@ -774,6 +779,11 @@
     '@container gc (max-width:899px){.gc-acc2{grid-template-columns:minmax(0,1fr);gap:0}.gc-acc2>.gc-acc:first-child{border-radius:6px 6px 0 0}.gc-acc2>.gc-acc+.gc-acc{margin-top:-1px;border-radius:0 0 6px 6px}}',
     '.gc-expo{columns:3 200px;column-gap:24px}',
     '.gc-expo li{break-inside:avoid;padding:6px 0;border-bottom:1px solid var(--gc-line);font-size:15px}',
+    '.gc-vplan{margin-top:24px}',
+    '.gc-vplan-g{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:clamp(20px,3cqi,40px);align-items:center}',
+    '.gc-vplan-g.is-solo{grid-template-columns:minmax(0,1fr)}',
+    '.gc-vplan .gc-card-t{margin-top:0}',
+    '@container gc (max-width:899px){.gc-vplan-g{grid-template-columns:minmax(0,1fr)}}',
     '.gc-shop{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,400px);margin-top:24px;border-radius:8px;overflow:hidden;background:var(--gc-deep);color:#fff}',
     '.gc-shop-b{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding:clamp(26px,4cqi,56px)}',
     '.gc-shop .gc-kick{color:var(--gc-sky)}',
@@ -1285,6 +1295,9 @@
       var lots = (r.lots || []).map(function (l) { return '<div class="gc-lot"><span aria-hidden="true">' + escAttr(l.i || '') + '</span><p>' + rx(l.t) + '</p></div>'; }).join('');
       var expo = Array.isArray(v.exposants) && v.exposants.length ? '<div><h4 class="gc-h4">' + tx(this._t('exposants')) + '</h4><ul class="gc-expo">' + v.exposants.map(function (x) { return '<li>' + tx(x && x.nom ? x.nom : x) + '</li>'; }).join('') + '</ul></div>' : '';
       var bimg = this._src(b.image);
+      var vimg = this._src(v.plan), valt = v.planAlt || '', vtxt = !!v.planTitre || !isEmpty(v.planTexte);
+      var vplan = vimg ? '<div class="gc-box gc-vplan"><div class="gc-vplan-g' + (vtxt ? '' : ' is-solo') + '"><figure class="gc-fig"><button type="button" class="gc-fig-b" data-act="zoom" data-src="' + escAttr(vimg) + '" data-alt="' + escAttr(valt) + '" aria-label="' + escAttr(this._t('agrandir')) + '"><img src="' + escAttr(sized(vimg, 1400)) + '" alt="' + escAttr(valt) + '" loading="lazy" decoding="async"><span class="gc-fig-z">' + ic('zoom') + tx(this._t('agrandir')) + '</span></button>' + (valt ? '<figcaption>' + tx(valt) + '</figcaption>' : '') + '</figure>' +
+        (vtxt ? '<div>' + (v.planTitre ? '<h4 class="gc-card-t">' + tx(v.planTitre) + '</h4>' : '') + (isEmpty(v.planTexte) ? '' : '<div class="gc-card-x">' + rx(v.planTexte) + '</div>') + '</div>' : '') + '</div></div>' : '';
       var shop = (bimg || b.titre) ? '<div class="gc-shop"><div class="gc-shop-b">' + (b.tag ? '<span class="gc-kick">' + tx(b.tag) + '</span>' : '') + '<h4 class="gc-card-t">' + rx(b.titre) + '</h4>' +
         (isEmpty(b.texte) ? '' : '<div class="gc-card-x">' + rx(b.texte) + '</div>') + this._btn(b.lien, b.bouton, 'gc-btn-white', '', true) + '</div>' +
         (bimg ? '<div class="gc-shop-m"><img src="' + escAttr(sized(bimg, 900)) + '" alt="' + escAttr(b.imageAlt || '') + '" loading="lazy" decoding="async"></div>' : '') + '</div>' : '';
@@ -1296,7 +1309,7 @@
         (lots ? '<div class="gc-mt"><h4 class="gc-h4">' + tx(this._t('lots')) + '</h4><p class="gc-small">' + tx(this._t('lotsIntro')) + '</p><div class="gc-lots">' + lots + '</div></div>' : '') +
         (Array.isArray(r.faq) && r.faq.length ? '<div class="gc-mt gc-acc-w"><h4 class="gc-h4">' + tx(this._t('faq')) + '</h4>' + this._acc(r.faq, 'rf') + '</div>' : '') + '</div>' +
         '<div class="gc-anchor gc-mt-l" id="gc-village"><h3 class="gc-h3 gc-h3-big">' + tx(v.titre || this._t('subVillage')) + '</h3>' +
-        '<div class="gc-stack">' + (isEmpty(v.texte) ? '' : '<p class="gc-p">' + rx(v.texte) + '</p>') + expo + '</div>' + shop + '</div>' +
+        '<div class="gc-stack">' + (isEmpty(v.texte) ? '' : '<p class="gc-p">' + rx(v.texte) + '</p>') + expo + '</div>' + vplan + shop + '</div>' +
         this._cartes('avant') + '</div></section>' + this._bandeaux('avant');
     }
 
@@ -1388,7 +1401,8 @@
 
     _secSupporters() {
       var L = this._liens(), d = this._v('direct') || {};
-      var btns = '<div class="gc-sup-btns"><a class="gc-btn gc-btn-navy" href="#gc-adresses" data-act="go" data-go="gc-adresses">' + tx(this._t('fanzones')) + ic('arrow') + '</a>' + this._btn(L.circulation, this._t('circulation'), 'gc-btn-blue') + '</div>';
+      var fz = isEmpty(L.fanzones) ? '<a class="gc-btn gc-btn-navy" href="#gc-adresses" data-act="go" data-go="gc-adresses">' + tx(this._t('fanzones')) + ic('arrow') + '</a>' : this._btn(L.fanzones, this._t('fanzones'), 'gc-btn-navy');
+      var btns = '<div class="gc-sup-btns">' + fz + this._btn(L.circulation, this._t('circulation'), 'gc-btn-blue') + '</div>';
       return '<section class="gc-sec" id="gc-supporters" data-spy><div class="gc-wrap">' + this._head('09', 'tSupporters', this._v('supportersIntro'), btns) +
         this._cartes('supporters') +
         (d.titre ? '<div class="gc-live"><div class="gc-live-i">' + ic('mic') + '</div><div><h3 class="gc-h3">' + tx(d.titre) + '</h3><div class="gc-rt">' + rx(d.texte) + '</div></div></div>' : '') +
