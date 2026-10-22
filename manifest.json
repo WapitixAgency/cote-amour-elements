@@ -1,7 +1,7 @@
 {
- "source": "WapitixAgency/cote-amour 55dfcbe",
+ "source": "WapitixAgency/cote-amour 60f59a8",
  "sha": "bbfee8daf3130224",
- "livreLe": "2026-10-22T11:29:59.674Z",
+ "livreLe": "2026-10-22T11:45:27.983Z",
  "cdn": "https://cdn.jsdelivr.net/gh/WapitixAgency/cote-amour-elements@main/",
  "fichier": "guide-coureur.js",
  "balise": "guide-coureur",
@@ -9,6 +9,6 @@
   "/guide-du-coureur",
   "/en/runner-guide"
  ],
- "revisionCourante": 1607,
+ "revisionCourante": 2,
  "revisionsAVenir": 30
 }

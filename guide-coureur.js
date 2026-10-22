@@ -1,4 +1,4 @@
-/* source cote-amour 55dfcbe */
+/* source cote-amour 60f59a8 */
 (function () {
   'use strict';
   if (typeof window === 'undefined') return;
